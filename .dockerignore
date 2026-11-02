@@ -1,0 +1,8 @@
+*
+!docker/vllm/requirements.txt
+!docker/vllm/logging.json
+!docker/vllm/entrypoint.sh
+!docker/vllm/warmup.py
+!docker/model-downloader/requirements.txt
+!docker/model-downloader/download_model.py
+!src/vllm_privacy/*.py

@@ -1,0 +1,13 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: vllm
+
+resources:
+  - ../../base
+
+# Copy secrets.env.example to secrets.env first. secrets.env is git-ignored.
+secretGenerator:
+  - name: vllm-secrets
+    envs:
+      - secrets.env

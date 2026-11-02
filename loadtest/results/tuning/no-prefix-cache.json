@@ -1,0 +1,17 @@
+[
+  {
+    "name": "long-shared",
+    "prompt_words": 2500,
+    "max_tokens": 64,
+    "concurrency": 4,
+    "requests": 8,
+    "errors": 0,
+    "prompt_tokens": 2807,
+    "ttft_p50": 19.088990449999983,
+    "ttft_p95": 37.79293390000021,
+    "latency_p50": 43.10392085000058,
+    "latency_p95": 62.11028889999943,
+    "requests_per_second": 0.09253887152846188,
+    "output_tokens_per_second": 5.92248777782156
+  }
+]

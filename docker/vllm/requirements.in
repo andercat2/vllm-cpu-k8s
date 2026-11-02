@@ -1,0 +1,7 @@
+# Direct dependencies. requirements.txt is generated from this file by
+# scripts/lock_requirements.sh. The zen extra adds AMD Zen kernels; vLLM ignores
+# it on other CPUs.
+vllm[zen]==0.32.0+cpu
+# vLLM requires the CPU build of Triton by URL, and such a dependency has to be
+# listed explicitly for the lock to resolve.
+triton @ https://github.com/triton-lang/triton-cpu/releases/download/v3.8.0/triton-3.8.0+cpu-cp312-abi3-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl

@@ -1,0 +1,17 @@
+[
+  {
+    "name": "long",
+    "prompt_words": 2500,
+    "max_tokens": 64,
+    "concurrency": 4,
+    "requests": 8,
+    "errors": 0,
+    "prompt_tokens": 2810,
+    "ttft_p50": 27.71215525000025,
+    "ttft_p95": 36.72488489999887,
+    "latency_p50": 42.17406225000104,
+    "latency_p95": 51.37642500000038,
+    "requests_per_second": 0.09475065724977795,
+    "output_tokens_per_second": 6.064042063985789
+  }
+]

@@ -1,0 +1,32 @@
+[
+  {
+    "name": "short",
+    "prompt_words": 0,
+    "max_tokens": 64,
+    "concurrency": 1,
+    "requests": 4,
+    "errors": 0,
+    "prompt_tokens": 70,
+    "ttft_p50": 0.27796489999991536,
+    "ttft_p95": 0.28853200000048673,
+    "latency_p50": 5.008757550000155,
+    "latency_p95": 5.097334300000512,
+    "requests_per_second": 0.1990619107923004,
+    "output_tokens_per_second": 12.739962290707226
+  },
+  {
+    "name": "short",
+    "prompt_words": 0,
+    "max_tokens": 64,
+    "concurrency": 4,
+    "requests": 8,
+    "errors": 0,
+    "prompt_tokens": 70,
+    "ttft_p50": 0.9742684499997267,
+    "ttft_p95": 0.9870166000000609,
+    "latency_p50": 5.783263799999986,
+    "latency_p95": 5.793974600000183,
+    "requests_per_second": 0.6912088609657892,
+    "output_tokens_per_second": 44.237367101810506
+  }
+]

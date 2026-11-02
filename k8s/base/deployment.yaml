@@ -1,0 +1,144 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vllm
+spec:
+  replicas: 1
+  # The model volume is ReadWriteOnce, so two pods cannot overlap.
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: inference
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/component: inference
+    spec:
+      serviceAccountName: vllm
+      # Otherwise the Service named vllm injects VLLM_PORT=tcp://..., which vLLM
+      # reads as its own setting and refuses to start.
+      enableServiceLinks: false
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 10001
+        runAsGroup: 10001
+        fsGroup: 10001
+        seccompProfile:
+          type: RuntimeDefault
+
+      initContainers:
+        # Only this container gets network-facing credentials. On a cache hit it
+        # exits without contacting the Hub.
+        - name: model-downloader
+          image: vllm-model-downloader:1.0.0
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: MODEL_ROOT
+              value: /models
+            - name: HF_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: vllm-secrets
+                  key: HF_TOKEN
+                  optional: true
+          envFrom:
+            - configMapRef:
+                name: vllm-env
+          securityContext: &containerSecurity
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: ["ALL"]
+          resources:
+            requests:
+              cpu: 500m
+              memory: 256Mi
+            limits:
+              cpu: "2"
+              memory: 1Gi
+          volumeMounts:
+            - name: models
+              mountPath: /models
+            - name: tmp
+              mountPath: /tmp
+
+      containers:
+        - name: vllm
+          image: vllm-cpu-private:0.32.0
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: MODEL_ROOT
+              value: /models
+            - name: SERVE_CONFIG_FILE
+              value: /etc/vllm/config.yaml
+            - name: VLLM_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: vllm-secrets
+                  key: VLLM_API_KEY
+          envFrom:
+            - configMapRef:
+                name: vllm-env
+          ports:
+            - name: http
+              containerPort: 8000
+          securityContext: *containerSecurity
+          # Measured peak on a cold start: 10 GiB with VLLM_CPU_KVCACHE_SPACE=2,
+          # most of the rest being weights and torch.compile leftovers. vLLM
+          # refuses to start if the free part of the limit is below the KV cache.
+          resources:
+            requests:
+              cpu: "4"
+              memory: 9Gi
+            limits:
+              cpu: "8"
+              memory: 11Gi
+          # Real requests, not /health: Triton compiles its kernels on the first
+          # generation, and traffic must not be the one to wait for that.
+          startupProbe:
+            exec:
+              command: ["python", "/opt/vllm-privacy/warmup.py"]
+            periodSeconds: 5
+            timeoutSeconds: 290
+            failureThreshold: 60
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: http
+            periodSeconds: 10
+            timeoutSeconds: 5
+          # Generous: under full load a CPU-only server answers probes slowly.
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: http
+            periodSeconds: 30
+            timeoutSeconds: 15
+            failureThreshold: 4
+          volumeMounts:
+            - name: models
+              mountPath: /models
+              readOnly: true
+            - name: config
+              mountPath: /etc/vllm
+              readOnly: true
+            - name: tmp
+              mountPath: /tmp
+            - name: shm
+              mountPath: /dev/shm
+
+      volumes:
+        - name: models
+          persistentVolumeClaim:
+            claimName: vllm-models
+        - name: config
+          configMap:
+            name: vllm-config
+        - name: tmp
+          emptyDir:
+            sizeLimit: 1Gi
+        - name: shm
+          emptyDir:
+            medium: Memory
+            sizeLimit: 2Gi

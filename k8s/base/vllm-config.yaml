@@ -1,0 +1,18 @@
+# Options of `vllm serve`, passed through --config. Edit and re-apply: kustomize
+# renames the ConfigMap by content hash, so the Deployment restarts by itself.
+host: 0.0.0.0
+port: 8000
+served-model-name: qwen2.5-1.5b-instruct
+
+dtype: bfloat16
+max-model-len: 8192
+max-num-seqs: 8
+max-num-batched-tokens: 2048
+
+# Metadata only: vllm_privacy strips prompts and outputs from these records.
+enable-log-requests: true
+enable-log-outputs: true
+
+# Replaced by AuditLogMiddleware, which does not print query strings.
+disable-uvicorn-access-log: true
+disable-fastapi-docs: true

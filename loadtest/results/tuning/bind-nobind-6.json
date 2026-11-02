@@ -1,0 +1,47 @@
+[
+  {
+    "name": "short",
+    "prompt_words": 0,
+    "max_tokens": 64,
+    "concurrency": 1,
+    "requests": 4,
+    "errors": 0,
+    "prompt_tokens": 70,
+    "ttft_p50": 0.2557669999996506,
+    "ttft_p95": 0.2751643999999942,
+    "latency_p50": 4.967980700000226,
+    "latency_p95": 5.001117599998906,
+    "requests_per_second": 0.20100140205009817,
+    "output_tokens_per_second": 12.864089731206283
+  },
+  {
+    "name": "short",
+    "prompt_words": 0,
+    "max_tokens": 64,
+    "concurrency": 4,
+    "requests": 8,
+    "errors": 0,
+    "prompt_tokens": 69,
+    "ttft_p50": 0.8802456499997788,
+    "ttft_p95": 0.9254839000004722,
+    "latency_p50": 5.597343149999688,
+    "latency_p95": 5.603790200000731,
+    "requests_per_second": 0.7145832233545603,
+    "output_tokens_per_second": 45.73332629469186
+  },
+  {
+    "name": "short",
+    "prompt_words": 0,
+    "max_tokens": 64,
+    "concurrency": 8,
+    "requests": 16,
+    "errors": 0,
+    "prompt_tokens": 69,
+    "ttft_p50": 1.6180178499998874,
+    "ttft_p95": 1.665770399999019,
+    "latency_p50": 6.761989349999567,
+    "latency_p95": 6.831462500000271,
+    "requests_per_second": 1.1770707991386098,
+    "output_tokens_per_second": 75.33253114487103
+  }
+]

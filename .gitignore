@@ -1,0 +1,6 @@
+.tools/
+.claude/
+k8s/overlays/*/secrets.env
+__pycache__/
+.pytest_cache/
+*.pyc
